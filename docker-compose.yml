@@ -5,6 +5,7 @@ services:
   postgres:
     image: postgres:17.2
     container_name: db
+    user: postgres
     ports:
       - "5432:5432"
     env_file:
@@ -30,7 +31,7 @@ services:
     ports:
       - 15432:80
     volumes:
-      - pgadmin:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       postgres:
         condition: service_healthy
@@ -45,5 +46,5 @@ networks:
 volumes:
   postgres_data:
     driver: local
-  pgadmin:
+  pgadmin_data:
     driver: local
