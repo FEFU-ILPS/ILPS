@@ -22,8 +22,20 @@ services:
       timeout: 5s
       retries: 10
 
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - 15432:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 networks:
-  services-internal:
+  internal:
     driver: bridge
     ipam:
       config:
@@ -31,4 +43,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  pgadmin:
     driver: local
