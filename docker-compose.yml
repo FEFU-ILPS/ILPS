@@ -3,8 +3,8 @@ version: "3.8"
 services:
 
   postgres:
+    container_name: database
     image: postgres:17.2
-    container_name: db
     user: postgres
     ports:
       - 5432:5432
@@ -24,8 +24,8 @@ services:
       retries: 10
 
   pgadmin:
+    container_name: database-admin
     image: dpage/pgadmin4
-    container_name: admin
     env_file:
       - .env
     ports:
@@ -38,6 +38,27 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  
+  backend:
+    container_name: backend-api-gateway
+    build: 
+      context: https://github.com/FEFU-ILPS/backend-api
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8061:8061
+    networks:
+      internal:
+        ipv4_address: 172.20.0.4
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8061/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
 
 networks:
   internal:
