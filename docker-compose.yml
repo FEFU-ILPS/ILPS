@@ -39,11 +39,9 @@ services:
       postgres:
         condition: service_healthy
   
-  backend:
-    container_name: backend-api-gateway
-    build: 
-      context: https://github.com/FEFU-ILPS/backend-api
-      dockerfile: Dockerfile
+  api-gateway:
+    container_name: api-gateway
+    build: https://github.com/FEFU-ILPS/backend-api.git
     env_file:
       - .env
     ports:
@@ -57,6 +55,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+  
+  auth:
+    container_name: service-auth
+    build: https://github.com/FEFU-ILPS/service-auth.git
+    env_file:
+      - .env
+    ports:
+      - 8062:8062
+    networks:
+      internal:
+        ipv4_address: 172.20.0.5
+    restart: unless-stopped
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8062/health"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 10
+
 
 
 
