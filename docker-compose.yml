@@ -76,8 +76,22 @@ services:
       timeout: 5s
       retries: 10
 
-
-
+  texts:
+    container_name: service-texts
+    build: https://github.com/FEFU-ILPS/service-texts.git
+    env_file:
+      - .env
+    ports:
+      - 8063
+    networks:
+      internal:
+        ipv4_address: 172.20.0.6
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8063/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 networks:
   internal:
