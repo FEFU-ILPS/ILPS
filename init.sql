@@ -12,3 +12,7 @@ ALTER DATABASE texts OWNER TO service_texts;
 CREATE USER service_task_manager WITH PASSWORD 'password123';
 CREATE DATABASE tasks;
 ALTER DATABASE tasks OWNER TO service_task_manager;
+
+---- ilps-service-audio-preprocessin
+
+---- ilps-service-audio-transcribing
