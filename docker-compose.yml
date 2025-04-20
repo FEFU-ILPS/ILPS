@@ -100,6 +100,28 @@ services:
       timeout: 5s
       retries: 10
 
+  task-manager:
+    container_name: service-task-manager
+    build: https://github.com/FEFU-ILPS/service-task-manager.git
+    env_file:
+      - .env
+    ports:
+      - 8064
+    networks:
+      internal:
+        ipv4_address: 172.20.0.7
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8064/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 networks:
   internal:
     driver: bridge
