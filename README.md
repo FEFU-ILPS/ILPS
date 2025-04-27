@@ -87,6 +87,9 @@
 - Backend API-Gateway: [ссылка](https://github.com/FEFU-ILPS/api-gateway?tab=readme-ov-file#конфигурация)
 - Сервис аутентификации: [ссылка](https://github.com/FEFU-ILPS/service-auth)
 - Сервис управления текстами: [ссылка](https://github.com/FEFU-ILPS/service-texts)
+- Сервис управления задачами обработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-task-manager)
+- Сервис предобработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-preprocessing)
+- Сервис транскрибирования аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-transcribing) 
 
 Помните, что все переменные окружения имеют стандартные значения. Вы можете их поменять в зависимости от того, как вы настроете инфраструктуру.
 
