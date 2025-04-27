@@ -85,16 +85,16 @@
 Таблицы переменных окружения для каждого сервиса инфраструктуры ILPS можно найти тут:
 
 - Backend API-Gateway: [ссылка](https://github.com/FEFU-ILPS/api-gateway?tab=readme-ov-file#конфигурация)
-- Сервис аутентификации: [ссылка](https://github.com/FEFU-ILPS/service-auth)
-- Сервис управления текстами: [ссылка](https://github.com/FEFU-ILPS/service-texts)
-- Сервис управления задачами обработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-task-manager)
-- Сервис предобработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-preprocessing)
-- Сервис транскрибирования аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-transcribing) 
+- Сервис аутентификации: [ссылка](https://github.com/FEFU-ILPS/service-auth?tab=readme-ov-file#конфигурация)
+- Сервис управления текстами: [ссылка](https://github.com/FEFU-ILPS/service-texts?tab=readme-ov-file#конфигурация)
+- Сервис управления задачами обработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-task-manager?tab=readme-ov-file#конфигурация)
+- Сервис предобработки аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-preprocessing?tab=readme-ov-file#конфигурация)
+- Сервис транскрибирования аудио: [ссылка](https://github.com/FEFU-ILPS/service-audio-transcribing?tab=readme-ov-file#конфигурация)
 
 Помните, что все переменные окружения имеют стандартные значения. Вы можете их поменять в зависимости от того, как вы настроете инфраструктуру.
 
 > [!IMPORTANT]
-> 
+>
 > Cтандартные пароли `password123` для пользователей PGSQL задаются в скрипте инициализации `init.sql`. Сгенерируйте более безопасные пароли при помощи hex-генераторов и замените стандартные пароли в `init.sql` на сгенерированные.
 >
 
