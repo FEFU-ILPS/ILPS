@@ -121,6 +121,46 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    
+    audio-preprocessing:
+      container_name: service-audio-preprocessing
+      build: https://github.com/FEFU-ILPS/service-audio-preprocessing.git
+      env_file:
+        - .env
+      ports:
+        - 8065
+      networks:
+        internal:
+          ipv4_address: 172.20.0.8
+      restart: unless-stopped
+      depends_on:
+        task-manager:
+          condition: service_healthy
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8065/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+      
+      audio-transcribing:
+        container_name: service-audio-transcribing
+        build: https://github.com/FEFU-ILPS/service-audio-transcribing.git
+        env_file:
+          - .env
+        ports:
+          - 8066
+        networks:
+          internal:
+            ipv4_address: 172.20.0.9
+        restart: unless-stopped
+        depends_on:
+          task-manager:
+            condition: service_healthy
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8066/health"]
+          interval: 10s
+          timeout: 5s
+          retries: 40
 
 networks:
   internal:
