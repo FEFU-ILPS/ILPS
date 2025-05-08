@@ -161,6 +161,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 40
+  
+  audio-feedback:
+    container_name: service-audio-feedback
+    build: https://github.com/FEFU-ILPS/service-audio-feedback.git
+    env_file:
+      - .env
+    ports:
+      - 8067
+    networks:
+      internal:
+        ipv4_address: 172.20.0.10
+    restart: unless-stopped
+    depends_on:
+      task-manager:
+        condition: service_healthy
+      texts:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8067/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 40
 
 networks:
   internal:
