@@ -49,6 +49,15 @@ services:
     networks:
       internal:
         ipv4_address: 172.20.0.4
+    depends_on:
+      auth:
+        condition: service_healthy
+      texts:
+        condition: service_healthy
+      exercises:
+        condition: service_healthy
+      task-manager:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8061/health"]
@@ -70,8 +79,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      api-gateway:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8062/health"]
       interval: 10s
@@ -91,8 +98,6 @@ services:
     restart: unless-stopped
     depends_on:
       postgres:
-        condition: service_healthy
-      api-gateway:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8063/health"]
@@ -114,7 +119,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      api-gateway:
+      audio-preprocessing:
+        condition: service_healthy
+      audio-transcribing:
+        condition: service_healthy
+      audio-feedback:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8064/health"]
@@ -133,9 +142,6 @@ services:
       internal:
         ipv4_address: 172.20.0.8
     restart: unless-stopped
-    depends_on:
-      task-manager:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8065/health"]
       interval: 10s
@@ -153,9 +159,6 @@ services:
       internal:
         ipv4_address: 172.20.0.9
     restart: unless-stopped
-    depends_on:
-      task-manager:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8066/health"]
       interval: 10s
@@ -174,8 +177,6 @@ services:
         ipv4_address: 172.20.0.10
     restart: unless-stopped
     depends_on:
-      task-manager:
-        condition: service_healthy
       texts:
         condition: service_healthy
     healthcheck:
