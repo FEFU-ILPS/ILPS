@@ -184,6 +184,26 @@ services:
       timeout: 5s
       retries: 40
 
+  exercises:
+    container_name: service-exercises
+    build: https://github.com/FEFU-ILPS/service-exercises.git
+    env_file:
+      - .env
+    ports:
+      - 8068
+    networks:
+      internal:
+        ipv4_address: 172.20.0.11
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8067/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 40
+
 networks:
   internal:
     driver: bridge
