@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8061/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
   
@@ -81,7 +81,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8062/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -101,7 +101,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8063/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -127,7 +127,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8064/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
     
@@ -144,7 +144,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8065/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
     
@@ -161,7 +161,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8066/health"]
-      interval: 1m
+      interval: 30s
       timeout: 5s
       retries: 10
       start_period: 3m
@@ -182,7 +182,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8067/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -202,7 +202,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8068/health"]
-      interval: 1m
+      interval: 10s
       timeout: 5s
       retries: 10
 
