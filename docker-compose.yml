@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   postgres:
-    container_name: database
+    container_name: postgres
     image: postgres:17.2
     user: postgres
     ports:
@@ -24,7 +24,7 @@ services:
       retries: 10
 
   pgadmin:
-    container_name: database-admin
+    container_name: pgadmin
     image: dpage/pgadmin4
     env_file:
       - .env
@@ -41,7 +41,7 @@ services:
   
   api-gateway:
     container_name: api-gateway
-    build: https://github.com/FEFU-ILPS/backend-api.git
+    build: ./api-gateway
     env_file:
       - .env
     ports:
@@ -50,13 +50,13 @@ services:
       internal:
         ipv4_address: 172.20.0.4
     depends_on:
-      auth:
+      service-auth:
         condition: service_healthy
-      texts:
+      service-texts:
         condition: service_healthy
-      exercises:
+      service-exercises:
         condition: service_healthy
-      task-manager:
+      service-task-manager:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
@@ -65,9 +65,9 @@ services:
       timeout: 5s
       retries: 10
   
-  auth:
+  service-auth:
     container_name: service-auth
-    build: https://github.com/FEFU-ILPS/service-auth.git
+    build: ./service-auth
     env_file:
       - .env
     ports:
@@ -85,9 +85,9 @@ services:
       timeout: 5s
       retries: 10
 
-  texts:
+  service-texts:
     container_name: service-texts
-    build: https://github.com/FEFU-ILPS/service-texts.git
+    build: ./service-texts
     env_file:
       - .env
     ports:
@@ -105,9 +105,9 @@ services:
       timeout: 5s
       retries: 10
 
-  task-manager:
+  service-task-manager:
     container_name: service-task-manager
-    build: https://github.com/FEFU-ILPS/service-task-manager.git
+    build: ./service-task-manager
     env_file:
       - .env
     ports:
@@ -119,11 +119,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      audio-preprocessing:
+      service-audio-preprocessing:
         condition: service_healthy
-      audio-transcribing:
+      service-audio-transcribing:
         condition: service_healthy
-      audio-feedback:
+      service-audio-feedback:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8064/health"]
@@ -131,9 +131,9 @@ services:
       timeout: 5s
       retries: 10
     
-  audio-preprocessing:
+  service-audio-preprocessing:
     container_name: service-audio-preprocessing
-    build: https://github.com/FEFU-ILPS/service-audio-preprocessing.git
+    build: ./service-audio-preprocessing
     env_file:
       - .env
     ports:
@@ -148,9 +148,9 @@ services:
       timeout: 5s
       retries: 10
     
-  audio-transcribing:
+  service-audio-transcribing:
     container_name: service-audio-transcribing
-    build: https://github.com/FEFU-ILPS/service-audio-transcribing.git
+    build: ./service-audio-transcribing
     env_file:
       - .env
     ports:
@@ -166,9 +166,9 @@ services:
       retries: 10
       start_period: 3m
   
-  audio-feedback:
+  service-audio-feedback:
     container_name: service-audio-feedback
-    build: https://github.com/FEFU-ILPS/service-audio-feedback.git
+    build: ./service-audio-feedback
     env_file:
       - .env
     ports:
@@ -178,7 +178,7 @@ services:
         ipv4_address: 172.20.0.10
     restart: unless-stopped
     depends_on:
-      texts:
+      service-texts:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8067/health"]
@@ -186,9 +186,9 @@ services:
       timeout: 5s
       retries: 10
 
-  exercises:
+  service-exercises:
     container_name: service-exercises
-    build: https://github.com/FEFU-ILPS/service-exercises.git
+    build: ./service-exercises
     env_file:
       - .env
     ports:

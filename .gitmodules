@@ -1,0 +1,24 @@
+[submodule "api-gateway"]
+	path = api-gateway
+	url = https://github.com/FEFU-ILPS/api-gateway.git
+[submodule "service-auth"]
+	path = service-auth
+	url = https://github.com/FEFU-ILPS/service-auth.git
+[submodule "service-texts"]
+	path = service-texts
+	url = https://github.com/FEFU-ILPS/service-texts.git
+[submodule "service-exercises"]
+	path = service-exercises
+	url = https://github.com/FEFU-ILPS/service-exercises
+[submodule "service-task-manager"]
+	path = service-task-manager
+	url = https://github.com/FEFU-ILPS/service-task-manager
+[submodule "service-audio-preprocessing"]
+	path = service-audio-preprocessing
+	url = https://github.com/FEFU-ILPS/service-audio-preprocessing.git
+[submodule "service-audio-transcribing"]
+	path = service-audio-transcribing
+	url = https://github.com/FEFU-ILPS/service-audio-transcribing.git
+[submodule "service-audio-feedback"]
+	path = service-audio-feedback
+	url = https://github.com/FEFU-ILPS/service-audio-feedback.git
