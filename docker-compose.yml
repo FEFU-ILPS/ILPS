@@ -159,6 +159,8 @@ services:
       internal:
         ipv4_address: 172.20.0.9
     restart: unless-stopped
+    volumes:
+      - transcribing_models:/service/models/src
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8066/health"]
       interval: 30s
@@ -217,4 +219,6 @@ volumes:
   postgres_data:
     driver: local
   pgadmin_data:
+    driver: local
+  transcribing_models:
     driver: local
