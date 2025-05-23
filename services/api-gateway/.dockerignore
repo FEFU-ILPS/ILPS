@@ -1,0 +1,6 @@
+poetry.lock
+LICENSE
+README.md
+.gitignore
+.env
+.venv

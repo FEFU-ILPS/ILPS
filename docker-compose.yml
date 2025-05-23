@@ -41,7 +41,7 @@ services:
   
   api-gateway:
     container_name: api-gateway
-    build: ./api-gateway
+    build: ./services/api-gateway
     env_file:
       - .env
     ports:
@@ -67,7 +67,7 @@ services:
   
   service-auth:
     container_name: service-auth
-    build: ./service-auth
+    build: ./services/service-auth
     env_file:
       - .env
     ports:
@@ -87,7 +87,7 @@ services:
 
   service-texts:
     container_name: service-texts
-    build: ./service-texts
+    build: ./services/service-texts
     env_file:
       - .env
     ports:
@@ -107,7 +107,7 @@ services:
 
   service-task-manager:
     container_name: service-task-manager
-    build: ./service-task-manager
+    build: ./services/service-task-manager
     env_file:
       - .env
     ports:
@@ -133,7 +133,7 @@ services:
     
   service-audio-preprocessing:
     container_name: service-audio-preprocessing
-    build: ./service-audio-preprocessing
+    build: ./services/service-audio-preprocessing
     env_file:
       - .env
     ports:
@@ -150,7 +150,7 @@ services:
     
   service-audio-transcribing:
     container_name: service-audio-transcribing
-    build: ./service-audio-transcribing
+    build: ./services/service-audio-transcribing
     env_file:
       - .env
     ports:
@@ -170,7 +170,7 @@ services:
   
   service-audio-feedback:
     container_name: service-audio-feedback
-    build: ./service-audio-feedback
+    build: ./services/service-audio-feedback
     env_file:
       - .env
     ports:
@@ -190,7 +190,7 @@ services:
 
   service-exercises:
     container_name: service-exercises
-    build: ./service-exercises
+    build: ./services/service-exercises
     env_file:
       - .env
     ports:
