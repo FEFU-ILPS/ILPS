@@ -49,7 +49,7 @@
 1. Клонируйте репозиторий:  
 
     ```bash
-    git clone --recurse-submodules https://github.com/FEFU-ILPS/ILPS && cd ILPS
+    git clone https://github.com/FEFU-ILPS/ILPS && cd ILPS
     ```
 
 2. Настройте окружение:
