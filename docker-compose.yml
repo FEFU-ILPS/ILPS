@@ -54,6 +54,8 @@ services:
     volumes:
       - ./nginx/certs:/etc/letsencrypt
       - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/letsencrypt/work:/var/lib/letsencrypt
+      - ./nginx/letsencrypt/logs:/var/log/letsencrypt
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 6h & wait $${!}; done;'"
     networks:
       proxy:
