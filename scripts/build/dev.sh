@@ -19,6 +19,11 @@ ensure_required_files() {
     echo "❌ Ошибка: Файл init.sql не найден в корне проекта" >&2
     return 1
   fi
+
+  if [ ! -f "$COMPOSE_FILE" ]; then
+    echo "❌ Файл $COMPOSE_FILE не найден." >&2
+    return 1
+  fi
 }
 
 # === Основной процесс ===

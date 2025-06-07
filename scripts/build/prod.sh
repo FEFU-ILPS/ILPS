@@ -4,6 +4,7 @@ set -euo pipefail
 # === Настройки ===
 readonly ROOT_DIR="$PWD"
 readonly SCRIPTS_DIR="${ROOT_DIR}/scripts"
+readonly COMPOSE_FILE="${ROOT_DIR}/build/docker-compose.yml"
 
 source "${SCRIPTS_DIR}/build/utils/nginx.sh"
 source "${SCRIPTS_DIR}/build/utils/certs.sh"
@@ -28,20 +29,17 @@ check_required_files() {
 
   if [ ! -f "${ROOT_DIR}/.env" ]; then
     echo "❌ Ошибка: Файл .env не найден в корне проекта" >&2
-    missing=true
+    return 1
   fi
 
   if [ ! -f "${ROOT_DIR}/init.sql" ]; then
     echo "❌ Ошибка: Файл init.sql не найден в корне проекта" >&2
-    missing=true
+    return 1
   fi
-
-  if [ "$missing" = true ]; then
-    echo "Пожалуйста, выполните:" >&2
-    echo "" >&2
-    echo "  ./scripts/configure.sh" >&2
-    echo "" >&2
-    exit 1
+  
+  if [ ! -f "$COMPOSE_FILE" ]; then
+    echo "❌ Файл $COMPOSE_FILE не найден." >&2
+    return 1
   fi
 }
 
@@ -59,7 +57,7 @@ main() {
   generate_nginx_config "$DOMAIN" "http"
 
   echo "🐳 Запуск docker-compose.yml..."
-  docker-compose -f "${ROOT_DIR}/build/docker-compose.yml" up -d
+  docker-compose -f "$COMPOSE_FILE" up -d
 
   if [ $? -ne 0 ]; then
     echo "❌ Ошибка при запуске контейнеров" >&2
