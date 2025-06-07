@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name $domain www.$domain;
+
+    # Для подтверждения сертификата Let'sEncrypt
+    location /.well-known/acme-challenge/ {
+        root /etc/nginx/html;
+        allow all;
+    }
+
+    # Редирект с HTTP до HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}

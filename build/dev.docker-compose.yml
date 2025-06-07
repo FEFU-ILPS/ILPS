@@ -1,18 +1,10 @@
 networks:
-  proxy:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.21.0.0/24
-          gateway: 172.21.0.1
-  
   containers:
     driver: bridge
     ipam:
       config:
         - subnet: 172.20.0.0/24
           gateway: 172.20.0.1
-
 
 volumes:
   postgres_data:
@@ -24,57 +16,20 @@ volumes:
 
 services:
  
-  nginx-proxy:
-    image: nginx:latest
-    container_name: nginx-proxy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
-      - ./nginx/certs:/etc/letsencrypt
-      - ./nginx/html:/etc/nginx/html
-    restart: unless-stopped
-    networks:
-      proxy:
-        ipv4_address: 172.21.0.2
-      containers: 
-        ipv4_address: 172.20.0.12
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-
-  letsencrypt:
-    image: certbot/certbot
-    container_name: nginx-letsencrypt
-    volumes:
-      - ./nginx/certs:/etc/letsencrypt
-      - ./nginx/html:/usr/share/nginx/html
-      - ./nginx/letsencrypt/work:/var/lib/letsencrypt
-      - ./nginx/letsencrypt/logs:/var/log/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 6h & wait $${!}; done;'"
-    networks:
-      proxy:
-        ipv4_address: 172.21.0.3
-
   postgres:
     container_name: postgres
     image: postgres:17.2
     user: postgres
     ports:
-      - 5432
+      - 5432:5432
     networks:
       containers:
         ipv4_address: 172.20.0.2
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${PROJECT_ROOT}/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
@@ -86,9 +41,9 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
-      - 80
+      - 15432:80
     networks:
       containers:
         ipv4_address: 172.20.0.3
@@ -100,11 +55,11 @@ services:
   
   api-gateway:
     container_name: api-gateway
-    build: https://github.com/FEFU-ILPS/api-gateway.git
+    build: ${PROJECT_ROOT}/services/api-gateway
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
-      - 8061
+      - 8061:8061
     networks:
       containers:
         ipv4_address: 172.20.0.4
@@ -126,9 +81,9 @@ services:
   
   service-auth:
     container_name: service-auth
-    build: https://github.com/FEFU-ILPS/service-auth.git
+    build: ${PROJECT_ROOT}/services/service-auth
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8062
     networks:
@@ -146,9 +101,9 @@ services:
 
   service-texts:
     container_name: service-texts
-    build: https://github.com/FEFU-ILPS/service-texts.git
+    build: ${PROJECT_ROOT}/services/service-texts
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8063
     networks:
@@ -166,9 +121,9 @@ services:
 
   service-task-manager:
     container_name: service-task-manager
-    build: https://github.com/FEFU-ILPS/service-task-manager.git
+    build: ${PROJECT_ROOT}/services/service-task-manager
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8064
     networks:
@@ -192,9 +147,9 @@ services:
     
   service-audio-preprocessing:
     container_name: service-audio-preprocessing
-    build: https://github.com/FEFU-ILPS/service-audio-preprocessing.git
+    build: ${PROJECT_ROOT}/services/service-audio-preprocessing
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8065
     networks:
@@ -209,9 +164,9 @@ services:
     
   service-audio-transcribing:
     container_name: service-audio-transcribing
-    build: https://github.com/FEFU-ILPS/service-audio-transcribing.git
+    build: ${PROJECT_ROOT}/services/service-audio-transcribing
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8066
     networks:
@@ -229,9 +184,9 @@ services:
   
   service-audio-feedback:
     container_name: service-audio-feedback
-    build: https://github.com/FEFU-ILPS/service-audio-feedback.git
+    build: ${PROJECT_ROOT}/services/service-audio-feedback
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8067
     networks:
@@ -249,9 +204,9 @@ services:
 
   service-exercises:
     container_name: service-exercises
-    build: https://github.com/FEFU-ILPS/service-exercises.git
+    build: ${PROJECT_ROOT}/services/service-exercises
     env_file:
-      - .env
+      - ${PROJECT_ROOT}/.env
     ports:
       - 8068
     networks:

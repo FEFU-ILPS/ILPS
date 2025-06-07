@@ -1,0 +1,42 @@
+server {
+    listen 80;
+    server_name admin.$domain www.admin.$domain;
+
+    # Для подтверждения сертификата Let'sEncrypt
+    location /.well-known/acme-challenge/ {
+        root /etc/nginx/html;
+        allow all;
+    }
+
+    # Редирект с HTTP до HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name admin.$domain www.admin.$domain};
+
+    root /etc/nginx/html;
+
+    index index.html;
+    error_page 404 404.html;
+
+    ssl_certificate /etc/letsencrypt/live/admin.ilps-trainer.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/admin.ilps-trainer.ru/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/admin.ilps-trainer.ru/chain.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Проксирование / на pgAdmin
+    location / {
+        proxy_pass http://172.20.0.3:80/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 60s;
+        proxy_read_timeout 120s;
+    }
+}
