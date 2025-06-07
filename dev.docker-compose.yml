@@ -1,0 +1,223 @@
+networks:
+  proxy:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+          gateway: 172.21.0.1
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  transcribing_models:
+    driver: local
+
+services:
+ 
+  postgres:
+    container_name: postgres
+    image: postgres:17.2
+    user: postgres
+    ports:
+      - 5432:5432
+    networks:
+      containers:
+        ipv4_address: 172.20.0.2
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - 15432:80
+    networks:
+      containers:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+  
+  api-gateway:
+    container_name: api-gateway
+    build: https://github.com/FEFU-ILPS/api-gateway.git
+    env_file:
+      - .env
+    ports:
+      - 8061:8061
+    networks:
+      containers:
+        ipv4_address: 172.20.0.4
+    depends_on:
+      service-auth:
+        condition: service_healthy
+      service-texts:
+        condition: service_healthy
+      service-exercises:
+        condition: service_healthy
+      service-task-manager:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8061/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  
+  service-auth:
+    container_name: service-auth
+    build: https://github.com/FEFU-ILPS/service-auth.git
+    env_file:
+      - .env
+    ports:
+      - 8062
+    networks:
+      containers:
+        ipv4_address: 172.20.0.5
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8062/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  service-texts:
+    container_name: service-texts
+    build: https://github.com/FEFU-ILPS/service-texts.git
+    env_file:
+      - .env
+    ports:
+      - 8063
+    networks:
+      containers:
+        ipv4_address: 172.20.0.6
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8063/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  service-task-manager:
+    container_name: service-task-manager
+    build: https://github.com/FEFU-ILPS/service-task-manager.git
+    env_file:
+      - .env
+    ports:
+      - 8064
+    networks:
+      containers:
+        ipv4_address: 172.20.0.7
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      service-audio-preprocessing:
+        condition: service_healthy
+      service-audio-transcribing:
+        condition: service_healthy
+      service-audio-feedback:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8064/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    
+  service-audio-preprocessing:
+    container_name: service-audio-preprocessing
+    build: https://github.com/FEFU-ILPS/service-audio-preprocessing.git
+    env_file:
+      - .env
+    ports:
+      - 8065
+    networks:
+      containers:
+        ipv4_address: 172.20.0.8
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8065/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    
+  service-audio-transcribing:
+    container_name: service-audio-transcribing
+    build: https://github.com/FEFU-ILPS/service-audio-transcribing.git
+    env_file:
+      - .env
+    ports:
+      - 8066
+    networks:
+      containers:
+        ipv4_address: 172.20.0.9
+    restart: unless-stopped
+    volumes:
+      - transcribing_models:/service/models/src
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8066/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 3m
+  
+  service-audio-feedback:
+    container_name: service-audio-feedback
+    build: https://github.com/FEFU-ILPS/service-audio-feedback.git
+    env_file:
+      - .env
+    ports:
+      - 8067
+    networks:
+      containers:
+        ipv4_address: 172.20.0.10
+    restart: unless-stopped
+    depends_on:
+      service-texts:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8067/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  service-exercises:
+    container_name: service-exercises
+    build: https://github.com/FEFU-ILPS/service-exercises.git
+    env_file:
+      - .env
+    ports:
+      - 8068
+    networks:
+      containers:
+        ipv4_address: 172.20.0.11
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8068/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
