@@ -1,23 +1,54 @@
 #!/bin/bash
 
-ROOT_DIR="$PWD"
+set -euo pipefail
 
-if [ ! -f "${ROOT_DIR}/.env" ] || [ ! -f "${ROOT_DIR}/init.sql" ]; then
-  echo "❌ Ошибка: Отсутствуют необходимые файлы .env или init.sql"
-  echo "Пожалуйста, выполните:"
-  echo ""
-  echo "  ./scripts/configure.sh"
-  echo ""
-  exit 1
-fi
+# === Настройки ===
+readonly ROOT_DIR="$PWD"
+readonly ENV_FILE="${ROOT_DIR}/.env"
+readonly INIT_SQL_FILE="${ROOT_DIR}/init.sql"
+readonly COMPOSE_FILE="${ROOT_DIR}/build/dev.docker-compose.yml"
 
-export PROJECT_ROOT="$ROOT_DIR"
+# === Проверка наличия необходимых файлов ===
+ensure_required_files() {
+  if [ ! -f "$ENV_FILE" ]; then
+    echo "❌ Ошибка: Файл .env не найден в корне проекта" >&2
+    return 1
+  fi
 
-docker-compose -f ./build/dev.docker-compose.yml up -d
+  if [ ! -f "$INIT_SQL_FILE" ]; then
+    echo "❌ Ошибка: Файл init.sql не найден в корне проекта" >&2
+    return 1
+  fi
+}
 
-if [ $? -eq 0 ]; then
-  echo "✅ Развертывание ILPS в среде DEV успешно завершено."
-else
-  echo "❌ Ошибка при развертывании ILPS в среде DEV."
-  exit 1
-fi
+# === Основной процесс ===
+main() {
+  echo "⚙️ Начат процесс развёртывания ILPS в DEV среду..."
+
+  # Проверяем наличие файлов
+  echo "🔍 Проверка наличие необходимых файлов..."
+  ensure_required_files || {
+    echo "Пожалуйста, выполните:" >&2
+    echo ""
+    echo "  ./scripts/configure.sh" >&2
+    echo ""
+    exit 1
+  }
+
+  # Экспортируем переменную окружения
+  export PROJECT_ROOT="$ROOT_DIR"
+
+  # Запуск Docker Compose
+  echo "🐳 Запуск dev.docker-compose.yml..."
+  docker-compose -f "$COMPOSE_FILE" up -d
+
+  if [ $? -eq 0 ]; then
+    echo "✅ Развертывание ILPS в среде DEV успешно завершено."
+  else
+    echo "❌ Ошибка при развертывании ILPS в DEV среде." >&2
+    exit 1
+  fi
+}
+
+# === Точка входа ===
+main "$@"
