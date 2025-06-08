@@ -1,3 +1,5 @@
 .env
 init.sql
 .vscode
+
+nginx/sites-enabled
