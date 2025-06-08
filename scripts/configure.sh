@@ -14,7 +14,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-declare -A CONFIG_VARS=()
+typeset -A CONFIG_VARS=()
 
 PROJECT_ROOT="$PWD"
 
