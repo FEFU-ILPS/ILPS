@@ -4,6 +4,7 @@ set -euo pipefail
 # === Настройки ===
 readonly ROOT_DIR="$PWD"
 readonly COMPOSE_FILE="${ROOT_DIR}/build/dev.docker-compose.yml"
+export PROJECT_ROOT="$ROOT_DIR"
 
 # === Основной процесс ===
 main() {
